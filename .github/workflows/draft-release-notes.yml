@@ -93,7 +93,7 @@ jobs:
           ORG="ni"
           PROJECT="DevCentral"
           PIPELINE_ID="27162"
-          BRANCH="main"
+          BRANCH="users/magarwal/release-examples-assets"
           PAT="${{ secrets.AZURE_DEVOPS_TOKEN }}"
 
           BODY=$(jq -n \
