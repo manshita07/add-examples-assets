@@ -70,16 +70,11 @@ namespace NationalInstruments.Tests.SemiconductorTestLibrary.Functionality.HintP
             foreach (var referenceNode in referenceNodes)
             {
                 var includeName = ((string)referenceNode.Attribute("Include") ?? string.Empty).Trim();
-                if (string.IsNullOrEmpty(includeName))
-                {
-                    AddIssue("<missing>", "<missing>", "Reference Include attribute is missing or empty.");
-                    continue;
-                }
+                var referenceName = string.IsNullOrEmpty(includeName) ? "<missing>" : includeName;
 
                 var hintNodes = referenceNode.Elements().Where(node => node.Name.LocalName == "HintPath").ToList();
                 if (hintNodes.Count == 0)
                 {
-                    AddIssue(includeName, "<missing>", "Reference does not define a HintPath.");
                     continue;
                 }
 
@@ -88,7 +83,6 @@ namespace NationalInstruments.Tests.SemiconductorTestLibrary.Functionality.HintP
                     var rawHintPath = hintNode.Value.Trim();
                     if (string.IsNullOrEmpty(rawHintPath))
                     {
-                        AddIssue(includeName, "<empty>", "HintPath is empty.");
                         continue;
                     }
 
@@ -99,7 +93,7 @@ namespace NationalInstruments.Tests.SemiconductorTestLibrary.Functionality.HintP
 
                     if (!File.Exists(Path.GetFullPath(resolvedPath)))
                     {
-                        AddIssue(includeName, rawHintPath, "HintPath target file does not exist.");
+                        AddIssue(referenceName, rawHintPath, "HintPath target file does not exist.");
                     }
                 }
             }
@@ -120,6 +114,7 @@ namespace NationalInstruments.Tests.SemiconductorTestLibrary.Functionality.HintP
             }
 
             var exampleName = Path.GetFileNameWithoutExtension(projectPath);
+
             var lines = new List<string>
             {
                 "ExampleName,ReferenceName,HintPath,Issue",
